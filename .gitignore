@@ -8,8 +8,9 @@ wheels/
 
 # venv
 .venv
-data/inputs/
-data/outputs/
+data/inputs/*
+!data/inputs/.gitkeep
+data/outputs/*
+!data/outputs/.gitkeep
 data/logs
 models
-logs
