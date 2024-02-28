@@ -8,6 +8,8 @@ wheels/
 
 # venv
 .venv
-data
+data/inputs/
+data/outputs/
+data/logs
 models
 logs
