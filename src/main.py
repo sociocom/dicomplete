@@ -11,19 +11,20 @@ from transformers import T5Tokenizer
 
 
 def main(
-    fname,
-    batch_size=128,
-    src_token_max_length=16,
-    tgt_token_max_length=16,
-    epoch_num=100,
-    device="cuda:0" if torch.cuda.is_available() else "mps",
-    input_column="appearance",
-    predict_column="appearance_yomi",
-    model_name="retrieva-jp/t5-base-long",
-    rank="S",
+    fname: str,
+    batch_size: int = 8,
+    src_token_max_length: int = 16,
+    tgt_token_max_length: int = 16,
+    epoch_num: int = 10,
+    device: str = "cuda:0" if torch.cuda.is_available() else "mps",
+    input_column: str = "appearance",
+    predict_column: str = "appearance_yomi",
+    reliability_column: str = "appearance_reliability",
+    model_name: str = "retrieva-jp/t5-base-long",
+    rank: str = "S",
 ):
     print(
-        f" input_column: {input_column}\n target_column: {predict_column}\n rank: {rank}\n batch_size: {batch_size}\n token_max_length_src: {src_token_max_length}\n token_max_length_tgt: {tgt_token_max_length}\n epoch_num: {epoch_num}\n device: {device}\n model_name: {model_name}\n"
+        f" input_column: {input_column}\n target_column: {predict_column}\n reliability_column: {reliability_column}\n rank: {rank}\n batch_size: {batch_size}\n token_max_length_src: {src_token_max_length}\n token_max_length_tgt: {tgt_token_max_length}\n epoch_num: {epoch_num}\n device: {device}\n model_name: {model_name}\n"
     )
     # データの読み込み
     # df = pd.read_csv("./data/db_data_DISEASE_SIP-3_v202401_2.1.csv")
@@ -35,16 +36,14 @@ def main(
     ix_train = ranks.index(rank) + 1  # => 1 + 1 = 2
     ranks_train = ranks[:ix_train]  # => "SA"
     str_ranks_train = r"|".join(r for r in ranks_train)  # => "S|A"
-    mask_train = (
-        df[f"{predict_column}_reliability"].fillna("E").str.contains(str_ranks_train)
-    )
+    mask_train = df[f"{reliability_column}"].fillna("E").str.contains(str_ranks_train)
     df_train = df[mask_train][
-        [input_column, predict_column, f"{predict_column}_reliability"]
-    ].head(1000)
+        [input_column, predict_column, f"{reliability_column}"]
+    ].reset_index(drop=True)
     df_test = df[~mask_train][
-        [input_column, predict_column, f"{predict_column}_reliability"]
-    ].head(
-        1000
+        [input_column, predict_column, f"{reliability_column}"]
+    ].reset_index(
+        drop=True
     )  # ~mask_train == not mask_train
 
     print("df_train")
@@ -73,7 +72,7 @@ def main(
         epochs=epoch_num,
         device=device,
     )
-    best_model, best_tokenizer, timestamp = trainer.train()
+    best_model, best_tokenizer, timestamp, stop_epoch = trainer.train()
 
     # テキスト生成の準備
     text_generator = GenerateText(
@@ -82,10 +81,12 @@ def main(
         df_test,
         input_column,
         predict_column,
+        reliability_column,
         timestamp,
         batch_size=batch_size,
         token_max_length_src=src_token_max_length,
         token_max_length_tgt=tgt_token_max_length,
+        epoch=stop_epoch,
         device=device,
     )
 

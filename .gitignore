@@ -12,5 +12,6 @@ data/inputs/*
 !data/inputs/.gitkeep
 data/outputs/*
 !data/outputs/.gitkeep
+data/merged/*
 data/logs
 models

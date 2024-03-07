@@ -16,31 +16,44 @@ help が見れるコマンド: `rye run python main.py --help`<br>
 
 ```
 NAME
-main.py
+    main.py
 
 SYNOPSIS
-main.py FNAME <flags>
+    main.py FNAME <flags>
 
 POSITIONAL ARGUMENTS
-FNAME
+    FNAME
+        Type: str
 
 FLAGS
--b, --batch_size=BATCH_SIZE
-Default: 128
--s, --src_token_max_length=SRC_TOKEN_MAX_LENGTH
-Default: 16
--t, --tgt_token_max_length=TGT_TOKEN_MAX_LENGTH
-Default: 16
--e, --epoch_num=EPOCH_NUM
-Default: 100
--d, --device=DEVICE
-Default: 'cuda:0'
--i, --input_column=INPUT_COLUMN
-Default: 'appearance'
--p, --predict_column=PREDICT_COLUMN
-Default: 'appearance_yomi'
--m, --model_name=MODEL_NAME
-Default: 'retrieva-jp/t5-base-long'
--r, --rank=RANK
-Default: 'S'
+    -b, --batch_size=BATCH_SIZE
+        Type: int
+        Default: 8
+    -s, --src_token_max_length=SRC_TOKEN_MAX_LENGTH
+        Type: int
+        Default: 16
+    -t, --tgt_token_max_length=TGT_TOKEN_MAX_LENGTH
+        Type: int
+        Default: 16
+    -e, --epoch_num=EPOCH_NUM
+        Type: int
+        Default: 10
+    -d, --device=DEVICE
+        Type: str
+        Default: 'cuda:0'
+    -i, --input_column=INPUT_COLUMN
+        Type: str
+        Default: 'appearance'
+    -p, --predict_column=PREDICT_COLUMN
+        Type: str
+        Default: 'appearance_yomi'
+    --reliability_column=RELIABILITY_COLUMN
+        Type: str
+        Default: 'appearance_reliability'
+    -m, --model_name=MODEL_NAME
+        Type: str
+        Default: 'retrieva-jp/t5-base-long'
+    --rank=RANK
+        Type: str
+        Default: 'S'
 ```
