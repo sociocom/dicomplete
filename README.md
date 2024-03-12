@@ -9,9 +9,20 @@ rank を指定するとそれ以上の信頼度のデータを訓練に，それ
 信頼度 S, A を訓練データ，
 信頼度 B, C, D, E をテストデータとする．
 
+## 使用方法
+
+Rye を導入した後，`rye sync`で python ライブラリをインストール
+
+下記のコマンド一覧を参考に適切な引数を追加し，実行．<br>
+実行例
+
+```
+rye run python src/main.py -i='正規形' -o='正規形よみ' --reliability_column='flag' 'data/inputs/db.csv'
+```
+
 ## コマンド一覧
 
-help が見れるコマンド: `rye run python main.py --help`<br>
+help が見れるコマンド: `rye run python src/main.py --help`<br>
 入力すると以下の説明が見られる．
 
 ```
