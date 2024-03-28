@@ -179,11 +179,11 @@ class Trainer:
             print(f"\nEpoch: {epoch+1}, Train Loss: {train_loss}")
             print(f"Val Accuracy: {val_accuracy}, Val Loss: {val_loss}")
 
-            # 最高正解率が更新された場合
-            if val_accuracy > best_accuracy:
-                best_accuracy = val_accuracy
-                self.num_epochs_without_improvement = 0
+            # 最小検証損失が更新された場合
+            if val_loss < best_loss:
                 best_loss = val_loss
+                self.num_epochs_without_improvement = 0
+                best_accuracy = val_accuracy
                 best_model_state = copy.deepcopy(self.model)
                 best_tokenizer_state = copy.deepcopy(self.tokenizer)
             else:
@@ -191,7 +191,7 @@ class Trainer:
                 # 早期停止条件を満たした場合
                 if self.num_epochs_without_improvement >= self.patience:
                     print(
-                        f"\nValidation accuracy has not improved for {self.patience} epochs. Training stopped."
+                        f"\nValidation loss has not improved for {self.patience} epochs. Training stopped."
                     )
                     print(f"Targets: {all_targets[:10]}")
                     print(f"Predicts: {all_predictions[:10]}")
@@ -317,7 +317,7 @@ class GenerateText:
                 self.input_column: original_texts,
                 self.target_column: target_columns_texts,
                 f"{self.target_column}_generated": prediction,
-                f"{self.target_column}_reliability": reliability,
+                f"{self.reliability_column}": reliability,
             }
         )
         output_dir = f"./data/outputs"

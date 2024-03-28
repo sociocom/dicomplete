@@ -27,7 +27,6 @@ def main(
         f" input_column: {input_column}\n target_column: {predict_column}\n reliability_column: {reliability_column}\n rank: {rank}\n batch_size: {batch_size}\n token_max_length_src: {src_token_max_length}\n token_max_length_tgt: {tgt_token_max_length}\n epoch_num: {epoch_num}\n device: {device}\n model_name: {model_name}\n"
     )
     # データの読み込み
-    # df = pd.read_csv("./data/db_data_DISEASE_SIP-3_v202401_2.1.csv")
     df = pd.read_csv(fname)
     print(df.head())
 
