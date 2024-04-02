@@ -44,6 +44,10 @@ def main(
     ].reset_index(
         drop=True
     )  # ~mask_train == not mask_train
+    df_train[input_column] = df_train[input_column].fillna("").astype(str)
+    df_train[predict_column] = df_train[predict_column].fillna("").astype(str)
+    df_test[input_column] = df_test[input_column].fillna("").astype(str)
+    df_test[predict_column] = df_test[predict_column].fillna("").astype(str)
 
     print("df_train")
     print(df_train.head())
