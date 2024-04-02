@@ -3,7 +3,7 @@ import torch
 import fire
 from generate import Trainer, GenerateText
 from transformers import T5Tokenizer
-import pandas as pd
+import re
 import torch
 import fire
 from generate import Trainer, GenerateText
@@ -48,6 +48,18 @@ def main(
     df_train[predict_column] = df_train[predict_column].fillna("").astype(str)
     df_test[input_column] = df_test[input_column].fillna("").astype(str)
     df_test[predict_column] = df_test[predict_column].fillna("").astype(str)
+    df_train[input_column] = df_train[input_column].apply(
+        lambda x: re.sub(r"[^\w\s]", "", x)
+    )
+    df_train[predict_column] = df_train[predict_column].apply(
+        lambda x: re.sub(r"[^\w\s]", "", x)
+    )
+    df_test[input_column] = df_test[input_column].apply(
+        lambda x: re.sub(r"[^\w\s]", "", x)
+    )
+    df_test[predict_column] = df_test[predict_column].apply(
+        lambda x: re.sub(r"[^\w\s]", "", x)
+    )
 
     print("df_train")
     print(df_train.head())
