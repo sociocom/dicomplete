@@ -17,7 +17,7 @@ Rye を導入した後，`rye sync`で python ライブラリをインストー�
 実行例
 
 ```
-rye run python src/main.py -i='正規形' -o='正規形よみ' --reliability_column='flag' 'data/inputs/db.csv'
+rye run python src/main.py -i='正規形' -p='正規形よみ' --reliability_column='flag' 'data/inputs/db.csv'
 ```
 
 ## コマンド一覧
@@ -65,6 +65,4 @@ FLAGS
         Type: str
         Default: 'retrieva-jp/t5-base-long'
     --rank=RANK
-        Type: str
-        Default: 'S'
 ```
