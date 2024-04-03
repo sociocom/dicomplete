@@ -4,10 +4,6 @@ import fire
 from generate import Trainer, GenerateText
 from transformers import T5Tokenizer
 import re
-import torch
-import fire
-from generate import Trainer, GenerateText
-from transformers import T5Tokenizer
 
 
 def main(
