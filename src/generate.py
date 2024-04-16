@@ -292,7 +292,7 @@ class GenerateText:
 
     def generate_text(self):
         """Generate text"""
-        original_texts = self.val_dataset[self.input_column].to_list()
+        original_texts = self.val_dataset["input_original"].to_list()
         target_columns_texts = self.val_dataset[self.target_column].to_list()
         reliability = self.val_dataset[self.reliability_column].to_list()
         prediction = []

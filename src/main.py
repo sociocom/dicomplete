@@ -40,6 +40,7 @@ def main(
     ].reset_index(
         drop=True
     )  # ~mask_train == not mask_train
+    df_test["input_original"] = df_test[input_column]
     df_train[input_column] = df_train[input_column].fillna("").astype(str)
     df_train[predict_column] = df_train[predict_column].fillna("").astype(str)
     df_test[input_column] = df_test[input_column].fillna("").astype(str)
