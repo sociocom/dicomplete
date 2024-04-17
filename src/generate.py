@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import torch
-from utils import T5FineTuner, generate_text_from_model
+from utils import T5FineTuner, generate_text_from_model, write_to_csv
 
 from tqdm import tqdm
 from datetime import datetime
@@ -294,12 +294,23 @@ class GenerateText:
 
     def generate_text(self):
         """Generate text"""
+        unipue_ids = self.val_dataset["ID"].to_list()
         original_texts = self.val_dataset["input_original"].to_list()
         target_columns_texts = self.val_dataset[self.target_column].to_list()
-        reliability = self.val_dataset[self.reliability_column].to_list()
+        reliability_list = self.val_dataset[self.reliability_column].to_list()
         prediction = []
 
         for i in tqdm(range(0, len(self.val_dataset), self.batch_size)):
+            ids = self.val_dataset.iloc[i : i + self.batch_size, :]["ID"].to_list()
+            original = self.val_dataset.iloc[i : i + self.batch_size, :][
+                "input_original"
+            ].to_list()
+            target_texts = self.val_dataset.iloc[i : i + self.batch_size, :][
+                self.target_column
+            ].to_list()
+            reliability = self.val_dataset.iloc[i : i + self.batch_size, :][
+                self.reliability_column
+            ].to_list()
             batch = self.val_dataset.iloc[i : i + self.batch_size, :]
             soap = batch[self.input_column].to_list()
             generated_text = generate_text_from_model(
@@ -314,28 +325,46 @@ class GenerateText:
             )
             prediction.extend(generated_text)
 
+            batch_df = pd.DataFrame(
+                {
+                    "ID": ids,
+                    self.input_column: original,
+                    self.target_column: target_texts,
+                    f"{self.target_column}_generated": generated_text,
+                    self.reliability_column: reliability,
+                }
+            )
+
+            output_dir = f"./data/outputs"
+            csv_filename = f"{output_dir}/{self.input_column}_to_{self.target_column}_epoch_{self.epoch}_{self.timestamp}.csv"
+            write_to_csv(batch_df, csv_filename)
+
         column_df = pd.DataFrame(
             {
-                "ID": self.val_dataset["ID"].to_list(),
+                "ID": unipue_ids,
                 self.input_column: original_texts,
                 self.target_column: target_columns_texts,
                 f"{self.target_column}_generated": prediction,
-                f"{self.reliability_column}": reliability,
+                self.reliability_column: reliability_list,
             }
         )
-
+        print(column_df.head())
         df = self.df[
             ["ID", self.input_column, self.target_column, self.reliability_column]
         ]
-        print(column_df.head())
+
         merged_df = pd.merge(df, column_df, on=["ID"], how="left", suffixes=("", "_y"))
         merged_df = merged_df[
             merged_df.columns.drop(list(merged_df.filter(regex="_y")))
         ]
-        output_dir = f"./data/outputs"
-        os.makedirs(output_dir, exist_ok=True)
-        merged_df.to_csv(
-            f"{output_dir}/{self.input_column}_to_{self.target_column}_epoch_{self.epoch}_{self.timestamp}.csv",
-            index=False,
-        )
+        merged_df[f"{self.target_column}_merged"] = merged_df[
+            f"{self.target_column}_generated"
+        ].fillna(merged_df[self.target_column])
+        merged_df.loc[
+            merged_df[f"{self.target_column}_generated"].notnull(),
+            self.reliability_column,
+        ] = "D"
+
+        merged_df.to_csv(csv_filename)
+
         return column_df
