@@ -365,6 +365,6 @@ class GenerateText:
             self.reliability_column,
         ] = "D"
 
-        merged_df.to_csv(csv_filename)
+        merged_df.to_csv(csv_filename, index=False)
 
         return column_df
