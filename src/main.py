@@ -36,7 +36,7 @@ def main(
         [input_column, predict_column, f"{reliability_column}"]
     ].reset_index(drop=True)
     df_test = df[~mask_train][
-        [input_column, predict_column, f"{reliability_column}"]
+        ["ID", input_column, predict_column, f"{reliability_column}"]
     ].reset_index(
         drop=True
     )  # ~mask_train == not mask_train
@@ -90,6 +90,7 @@ def main(
     text_generator = GenerateText(
         best_model,
         best_tokenizer,
+        df,
         df_test,
         input_column,
         predict_column,

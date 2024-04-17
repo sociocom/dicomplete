@@ -266,6 +266,7 @@ class GenerateText:
         self,
         model,
         tokenizer,
+        df,
         val_dataset,
         input_column,
         target_column,
@@ -280,6 +281,7 @@ class GenerateText:
         self.model = model
         self.tokenizer = tokenizer
         self.val_dataset = val_dataset
+        self.df = df
         self.input_column = input_column
         self.target_column = target_column
         self.reliability_column = reliability_column
@@ -314,15 +316,25 @@ class GenerateText:
 
         column_df = pd.DataFrame(
             {
+                "ID": self.val_dataset["ID"].to_list(),
                 self.input_column: original_texts,
                 self.target_column: target_columns_texts,
                 f"{self.target_column}_generated": prediction,
                 f"{self.reliability_column}": reliability,
             }
         )
+
+        df = self.df[
+            ["ID", self.input_column, self.target_column, self.reliability_column]
+        ]
+        print(column_df.head())
+        merged_df = pd.merge(df, column_df, on=["ID"], how="left", suffixes=("", "_y"))
+        merged_df = merged_df[
+            merged_df.columns.drop(list(merged_df.filter(regex="_y")))
+        ]
         output_dir = f"./data/outputs"
         os.makedirs(output_dir, exist_ok=True)
-        column_df.to_csv(
+        merged_df.to_csv(
             f"{output_dir}/{self.input_column}_to_{self.target_column}_epoch_{self.epoch}_{self.timestamp}.csv",
             index=False,
         )
