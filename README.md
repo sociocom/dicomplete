@@ -17,7 +17,7 @@ Rye を導入した後，`rye sync`で python ライブラリをインストー�
 実行例
 
 ```
-rye run python src/main.py -i='正規形' -p='正規形よみ' --reliability_column='flag' 'data/inputs/db.csv'
+rye run python src/main.py -i='出現形' -p='正規形よみ' --reliability_column='flag' 'data/inputs/db.csv'
 ```
 
 ## コマンド一覧
