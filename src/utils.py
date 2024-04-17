@@ -70,3 +70,12 @@ def generate_text_from_model(
     ]
 
     return generated_texts
+
+
+def write_to_csv(df, csv_filename):
+    try:
+        with open(csv_filename, "a") as f:
+            df.to_csv(f, index=False, header=f.tell() == 0)
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+        pass
