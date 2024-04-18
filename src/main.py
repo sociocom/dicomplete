@@ -56,9 +56,6 @@ def main(
     # トークナイザー（SentencePiece）モデルの読み込み
     tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME, is_fast=True)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    input_column = input_column
-    predict_column = predict_column
-
     # Trainerの初期化とトレーニング
     trainer = Trainer(
         model_name=MODEL_NAME,
