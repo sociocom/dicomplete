@@ -62,12 +62,18 @@ def generate_text_from_model(
         num_return_sequences=num_return_sequences,  # 生成する文の数
     )
 
-    generated_texts = [
-        tokenizer.decode(
-            ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
-        )
-        for ids in outputs
-    ]
+    generated_texts = []
+    for ids in outputs:
+        try:
+            # ボキャブラリの範囲内のトークンIDをデコードしてテキストに変換
+            decoded_text = tokenizer.decode(
+                ids, skip_special_tokens=True, clean_up_tokenization_spaces=False
+            )
+            generated_texts.append(decoded_text)
+        except Exception as e:
+            # エラーが発生した場合は空の文字列を追加
+            print(f"Error occurred during decoding: {e}")
+            generated_texts.append("")
 
     return generated_texts
 
