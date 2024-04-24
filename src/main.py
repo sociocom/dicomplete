@@ -3,7 +3,6 @@ import torch
 import fire
 from generate import Trainer, GenerateText
 from transformers import T5Tokenizer
-import re
 
 
 def main(
@@ -26,16 +25,19 @@ def main(
     df = pd.read_csv(fname)
     print(df.head())
 
+    df_skipped = df[df[f"{reliability_column}"] != "E"]
     # rank <- A
     ranks = "SABCDE"
     ix_train = ranks.index(rank) + 1  # => 1 + 1 = 2
     ranks_train = ranks[:ix_train]  # => "SA"
     str_ranks_train = r"|".join(r for r in ranks_train)  # => "S|A"
-    mask_train = df[f"{reliability_column}"].fillna("E").str.contains(str_ranks_train)
-    df_train = df[mask_train][
+    mask_train = (
+        df_skipped[f"{reliability_column}"].fillna("D").str.contains(str_ranks_train)
+    )
+    df_train = df_skipped[mask_train][
         [input_column, predict_column, f"{reliability_column}"]
     ].reset_index(drop=True)
-    df_test = df[~mask_train][
+    df_test = df_skipped[~mask_train][
         ["ID", input_column, predict_column, f"{reliability_column}"]
     ].reset_index(
         drop=True
@@ -50,6 +52,8 @@ def main(
     print(df_train.head())
     print("df_test")
     print(df_test.head())
+
+    torch.manual_seed(2023)
 
     # 事前学習済みモデル
     MODEL_NAME = model_name

@@ -50,6 +50,8 @@ huggingface-hub==0.20.3
 idna==3.6
     # via requests
     # via yarl
+iniconfig==2.0.0
+    # via pytest
 ipykernel==6.29.2
     # via dicomplete
 ipython==8.21.0
@@ -126,6 +128,7 @@ packaging==23.2
     # via huggingface-hub
     # via ipykernel
     # via lightning-utilities
+    # via pytest
     # via pytorch-lightning
     # via torchmetrics
     # via transformers
@@ -137,6 +140,8 @@ pexpect==4.9.0
     # via ipython
 platformdirs==4.2.0
     # via jupyter-core
+pluggy==1.4.0
+    # via pytest
 prompt-toolkit==3.0.43
     # via ipython
 psutil==5.9.8
@@ -147,6 +152,7 @@ pure-eval==0.2.2
     # via stack-data
 pygments==2.17.2
     # via ipython
+pytest==8.1.1
 python-dateutil==2.8.2
     # via jupyter-client
     # via pandas

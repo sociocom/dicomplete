@@ -6,8 +6,7 @@ from src.main import main
 from src.generate import Trainer, GenerateText
 import warnings
 
-# DeprecationWarning を無視する
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore")
 
 
 def test_main():
